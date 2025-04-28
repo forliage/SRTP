@@ -1,0 +1,61 @@
+LOG_ROOT: "D:/data/logs_cross_validation/"
+VM_PATH: "D:/Virtual_Machines/Windows 11 x64_1/Windows 11 x64.vmx"
+RETRY_TIMES: 100
+
+CONTROL_BACKEND: "uia"  # The backend for control action, currently we support uia and win32
+MAX_STEP: 20  # The max step limit for completing the user request
+SLEEP_TIME: 0  # The sleep time between each step to wait for the window to be ready
+RECTANGLE_TIME: 1
+FIRST_STEP_WAIT_TIME: 15
+
+SAFE_GUARD: False  # Whether to use the safe guard to prevent the model from doing sensitve operations.
+# The list of widgets that allowed to be selected, in uia backend, it will be used for filter the control_type, while in win32 backend, it will be used for filter the class_name.
+HISTORY_KEYS: ["Step", "Thought", "ControlText", "Action", "Comment", "Results"]  # The keys of the action history for the next step.
+ANNOTATION_COLORS: {
+        "Button": "#FFF68F",
+        "Edit": "#A5F0B5",
+        "TabItem": "#A5E7F0",
+        "Document": "#FFD18A",
+        "ListItem": "#D9C3FE",
+        "MenuItem": "#E7FEC3",
+        "ScrollBar": "#FEC3F8",
+        "TreeItem": "#D6D6D6",
+        "Hyperlink": "#91FFEB",
+        "ComboBox": "#D8B6D4"
+    }
+
+PRINT_LOG: False  # Whether to print the log  
+CONCAT_SCREENSHOT: True  # Whether to concat the screenshot for the control item
+LOG_LEVEL: "DEBUG"  # The log level
+INCLUDE_LAST_SCREENSHOT: True  # Whether to include the last screenshot in the observation
+REQUEST_TIMEOUT: 250  # The call timeout for the GPT-V model
+
+
+HOSTAGENT_PROMPT: "prompts/share/superlite/host_agent.yaml"  # The prompt for the app selection
+
+APPAGENT_PROMPT: "prompts/share/superlite/app_agent.yaml"  # The prompt for the action selection
+
+FOLLOWERAHENT_PROMPT: "prompts/share/base/app_agent.yaml"  # The prompt for the follower agent
+
+HOSTAGENT_EXAMPLE_PROMPT: "prompts/examples/lite/{mode}/host_agent_example.yaml"  # The prompt for the app selection
+APPAGENT_EXAMPLE_PROMPT: "prompts/examples/lite/{mode}/app_agent_example.yaml"  # The prompt for the action selection
+
+API_PROMPT: "prompts/share/superlite/api.yaml"  # The prompt for the API
+CLICK_API: "click_input" # The click API
+INPUT_TEXT_API: "type_keys" # The input text API
+INPUT_TEXT_ENTER: False # whether to press enter after typing the text
+
+## APIs related
+USE_APIS: False  # Whether to use the API
+WORD_API_PROMPT: "prompts/apps/word/api.yaml"  # The prompt for the word API
+
+# For control filtering
+# 'TEXT' for only rich text filter, 'SEMANTIC' for only semantic similarity match, 'ICON' for only icon match
+CONTROL_FILTER_TYPE: []  # The list of control filter type, support 'TEXT', 'SEMANTIC', 'ICON'
+CONTROL_FILTER_TOP_K_PLAN: 2  # The control filter effect on top k plans, default is 2
+CONTROL_FILTER_TOP_K_SEMANTIC: 15  # The control filter top k for semantic similarity
+CONTROL_FILTER_TOP_K_ICON: 15  # The control filter top k for icon similarity
+CONTROL_FILTER_MODEL_SEMANTIC_NAME: "all-MiniLM-L6-v2"  # The control filter model name of semantic similarity
+CONTROL_FILTER_MODEL_ICON_NAME: "clip-ViT-B-32"  # The control filter model name of icon similarity
+
+ALLOW_OPENAPP: True  # Whether to allow the open app action
