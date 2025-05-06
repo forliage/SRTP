@@ -1,0 +1,24 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(task_name: str, priority_level: str) -> EvalResult:
+    # Check if the task name was typed
+    if not check_keyboard_types(text=task_name):
+        return EvalResult(False, f"Subtask execution failed because task name '{task_name}' was not typed.", 0/4)
+
+    # Check if the 'Add task' button was clicked
+    if not check_mouse_clicks(text='Add task'):
+        return EvalResult(False, "Subtask execution failed because 'Add task' button was not clicked.", 1/4)
+
+    # Check if the task with the specified name exists
+    if not check_text_exists_via_control(text=task_name):
+        return EvalResult(False, f"Subtask execution failed because task '{task_name}' was not found.", 2/4)
+
+    # Check if the priority level was set correctly
+    priority_text = priority_level.lower().replace(' ', '')
+    if not check_text_exists_via_control(text=priority_text):
+        return EvalResult(False, f"Subtask execution failed because priority '{priority_level}' was not set.", 3/4)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 4/4)

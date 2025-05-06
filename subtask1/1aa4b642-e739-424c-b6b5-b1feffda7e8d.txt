@@ -1,0 +1,29 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(note_idx: str) -> EvalResult:
+    # Check if the clipboard contains text
+    if not clipboard_contains_text():
+        return EvalResult(False, "Subtask execution failed because no text was found in clipboard.", 0/5)
+
+    # Check if the 'Sticky Notes' application was opened
+    if not check_mouse_clicks(text='Sticky Notes'):
+        return EvalResult(False, "Subtask execution failed because agent did not open 'Sticky Notes'.", 1/5)
+
+    # Check if the specified note was opened
+    if note_idx == 'first':
+        note_identifier = 'Purple note'
+    else:
+        return EvalResult(False, f"Subtask execution failed because note index '{note_idx}' is not recognized.", 2/5)
+
+    if not check_mouse_clicks(text=note_identifier):
+        return EvalResult(False, f"Subtask execution failed because agent did not open the '{note_idx}' note.", 3/5)
+
+    # Check if the clipboard text was typed into the note
+    clipboard_text = get_clipboard_text()
+    if not check_keyboard_types(text=clipboard_text):
+        return EvalResult(False, "Subtask execution failed because clipboard text was not typed into the note.", 4/5)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 5/5)

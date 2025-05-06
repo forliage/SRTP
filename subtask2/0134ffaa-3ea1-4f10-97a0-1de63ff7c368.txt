@@ -1,0 +1,23 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(img_path: str, effect_name: str, class_name: str) -> EvalResult:
+    # Check if the image file was opened
+    if not check_file_exists(file_path=img_path):
+        return EvalResult(False, f"Subtask execution failed because the image '{img_path}' was not opened.", 0/4)
+
+    # Check if the 'Effects' menu was accessed
+    if not check_mouse_clicks(text='Effects'):
+        return EvalResult(False, "Subtask execution failed because the 'Effects' menu was not accessed.", 1/4)
+
+    # Check if the correct class of effects was selected
+    if not check_mouse_clicks(text=class_name):
+        return EvalResult(False, f"Subtask execution failed because the effect class '{class_name}' was not selected.", 2/4)
+
+    # Check if the specific effect was applied
+    if not check_mouse_clicks(text=effect_name):
+        return EvalResult(False, f"Subtask execution failed because the effect '{effect_name}' was not applied.", 3/4)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 4/4)

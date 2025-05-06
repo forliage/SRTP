@@ -1,0 +1,19 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(note_title: str, text: str) -> EvalResult:
+    # Check if the note with the specified title was opened
+    if not check_mouse_clicks(text=note_title):
+        return EvalResult(False, f"Subtask execution failed because the note titled '{note_title}' was not opened.", 0/3)
+
+    # Check if the content was replaced with the specified text
+    if not check_keyboard_types(text=text):
+        return EvalResult(False, f"Subtask execution failed because the text '{text}' was not typed.", 1/3)
+
+    # Verify if the new content exists in the note
+    if not check_text_exists_via_control(text=text):
+        return EvalResult(False, f"Subtask execution failed because the text '{text}' was not found in the note.", 2/3)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 3/3)

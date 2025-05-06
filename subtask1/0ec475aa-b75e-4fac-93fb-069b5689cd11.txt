@@ -1,0 +1,27 @@
+
+import os
+from collections import namedtuple
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(playlist_name: str, img_path: str) -> EvalResult:
+    # Extract the image file name
+    img_name = os.path.basename(img_path)
+
+    # Check if the playlist was selected
+    if not check_mouse_clicks(text=playlist_name):
+        return EvalResult(False, f"Subtask execution failed because agent did not select the playlist '{playlist_name}'.", 0/4)
+
+    # Check if the 'Edit photo' or 'Choose photo' option was clicked
+    if not (check_mouse_clicks(text='Edit photo') or check_mouse_clicks(text='Choose photo')):
+        return EvalResult(False, "Subtask execution failed because agent did not click 'Edit photo' or 'Choose photo'.", 1/4)
+
+    # Check if the correct image file was selected
+    if not check_mouse_clicks(text=img_name):
+        return EvalResult(False, f"Subtask execution failed because agent did not select the image '{img_name}'.", 2/4)
+
+    # Check if the 'Save' button was clicked
+    if not check_mouse_clicks(text='Save'):
+        return EvalResult(False, "Subtask execution failed because agent did not click 'Save'.", 3/4)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 4/4)

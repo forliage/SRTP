@@ -1,0 +1,27 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(article_title: str, layout: str, pages: str, output_pdf_path: str) -> EvalResult:
+    # Check if the Wikipedia article page was accessed
+    if not check_text_exists_via_control(text=article_title):
+        return EvalResult(False, f"Subtask execution failed because the article '{article_title}' was not accessed.", 0/5)
+
+    # Check if the 'Download PDF' option was clicked
+    if not check_mouse_clicks(text='Download PDF'):
+        return EvalResult(False, "Subtask execution failed because 'Download PDF' was not clicked.", 1/5)
+
+    # Check if the layout was set correctly
+    if not check_text_exists_via_control(text=layout):
+        return EvalResult(False, f"Subtask execution failed because layout '{layout}' was not set.", 2/5)
+
+    # Check if the pages option was set correctly
+    if not check_text_exists_via_control(text=pages):
+        return EvalResult(False, f"Subtask execution failed because pages option '{pages}' was not set.", 3/5)
+
+    # Check if the file was saved with the correct name
+    if not check_file_exists(file_path=output_pdf_path):
+        return EvalResult(False, f"Subtask execution failed because the file '{output_pdf_path}' was not found.", 4/5)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 5/5)

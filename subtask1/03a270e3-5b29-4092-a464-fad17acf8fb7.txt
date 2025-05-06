@@ -1,0 +1,27 @@
+
+from collections import namedtuple
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(input_pdf_path: str, output_pdf_path: str) -> EvalResult:
+    # Extract the file names from the paths
+    input_pdf_name = os.path.basename(input_pdf_path)
+    output_pdf_name = os.path.basename(output_pdf_path)
+
+    # Check if the 'Add page numbers' option was clicked
+    if not check_mouse_clicks(text='Add page numbers'):
+        return EvalResult(False, "Subtask execution failed because agent did not click on 'Add page numbers'.", 0/4)
+
+    # Check if the input PDF file was selected
+    if not check_mouse_clicks(text=input_pdf_name):
+        return EvalResult(False, f"Subtask execution failed because agent did not select the input PDF '{input_pdf_name}'.", 1/4)
+
+    # Check if the 'Save' button was clicked
+    if not check_mouse_clicks(text='Save'):
+        return EvalResult(False, "Subtask execution failed because agent did not click on 'Save'.", 2/4)
+
+    # Check if the output PDF file exists
+    if not check_file_exists(file_path=output_pdf_path):
+        return EvalResult(False, f"Subtask execution failed because the output PDF '{output_pdf_name}' was not found.", 3/4)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 4/4)

@@ -1,0 +1,23 @@
+
+from collections import namedtuple
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(output_pdf_path: str) -> EvalResult:
+    # Check if the print dialog was opened and the 'Save as PDF' option was selected
+    if not check_mouse_clicks(text='Save as type:'):
+        return EvalResult(False, "Subtask execution failed because 'Save as type:' was not selected.", 0/4)
+
+    # Check if the file name was entered correctly
+    if not check_keyboard_types(text=output_pdf_path):
+        return EvalResult(False, "Subtask execution failed because the file name was not typed correctly.", 1/4)
+
+    # Check if the 'Save' button was clicked
+    if not check_mouse_clicks(text='Save'):
+        return EvalResult(False, "Subtask execution failed because the 'Save' button was not clicked.", 2/4)
+
+    # Check if the PDF file was successfully created
+    if not check_file_exists(file_path=output_pdf_path):
+        return EvalResult(False, "Subtask execution failed because the PDF file was not found at the specified location.", 3/4)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 4/4)

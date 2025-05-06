@@ -1,0 +1,16 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(text: str) -> EvalResult:
+    # Check if a new code cell was added
+    if not check_mouse_clicks(text='Add Code Cell'):
+        return EvalResult(False, "Subtask execution failed because a new code cell was not added.", 0/2)
+
+    # Check if the correct text was typed in the new code cell
+    expected_code = f"print('{text}')"
+    if not check_keyboard_types(text=expected_code):
+        return EvalResult(False, f"Subtask execution failed because the text '{expected_code}' was not typed in the code cell.", 1/2)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 2/2)

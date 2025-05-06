@@ -1,0 +1,20 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(img_name: str) -> EvalResult:
+    # Check if the image was right-clicked
+    if not check_mouse_clicks(text=img_name):
+        return EvalResult(False, f"Subtask execution failed because agent did not right-click on '{img_name}'.", 0/3)
+
+    # Check if the image was copied to the clipboard
+    if not clipboard_contains_file():
+        return EvalResult(False, "Subtask execution failed because the image was not copied to the clipboard.", 1/3)
+
+    # Get the file name from clipboard and verify it matches the expected image name
+    file_name_in_clipboard = get_clipboard_file_name()
+    if file_name_in_clipboard != img_name:
+        return EvalResult(False, f"Subtask execution failed because clipboard file name '{file_name_in_clipboard}' does not match expected '{img_name}'.", 2/3)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 3/3)

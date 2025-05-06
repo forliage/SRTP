@@ -1,0 +1,26 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(img_path: str, exposure: int) -> EvalResult:
+    # Extract the image file name
+    img_name = os.path.basename(img_path)
+
+    # Check if the image was opened in paint.net
+    if not check_mouse_clicks(text='Open') or not check_file_exists(img_path):
+        return EvalResult(False, f"Subtask execution failed because the image '{img_name}' was not opened in paint.net.", 0/4)
+
+    # Check if the exposure adjustment was made
+    if not check_mouse_clicks(text='Adjustments') or not check_mouse_clicks(text='Exposure'):
+        return EvalResult(False, "Subtask execution failed because the 'Exposure' adjustment was not accessed.", 1/4)
+
+    # Check if the exposure value was set correctly
+    if not check_keyboard_types(text=str(exposure)):
+        return EvalResult(False, f"Subtask execution failed because the exposure was not set to '{exposure}'.", 2/4)
+
+    # Check if the image was saved
+    if not check_mouse_clicks(text='File') or not check_mouse_clicks(text='Save'):
+        return EvalResult(False, "Subtask execution failed because the image was not saved.", 3/4)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 4/4)

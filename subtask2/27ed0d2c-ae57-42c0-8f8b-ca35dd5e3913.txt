@@ -1,0 +1,15 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(task_name: str) -> EvalResult:
+    # Check if the task with the specified name was clicked
+    if not check_mouse_clicks(text=task_name):
+        return EvalResult(False, f"Subtask execution failed because the task '{task_name}' was not clicked.", 0/2)
+
+    # Check if the 'Mark task as complete' button was clicked
+    if not check_mouse_clicks(text='Mark task as complete'):
+        return EvalResult(False, "Subtask execution failed because 'Mark task as complete' was not clicked.", 1/2)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 2/2)

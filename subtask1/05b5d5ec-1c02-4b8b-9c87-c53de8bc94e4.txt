@@ -1,0 +1,19 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(img_name: str) -> EvalResult:
+    # Check if the image 'dog.jpg' was selected
+    if not check_mouse_clicks(text=img_name):
+        return EvalResult(False, f"Subtask execution failed because agent did not select the image '{img_name}'.", 0/3)
+
+    # Check if the 'Delete' option was clicked
+    if not check_mouse_clicks(text='Delete'):
+        return EvalResult(False, "Subtask execution failed because agent did not click the 'Delete' option.", 1/3)
+
+    # Check if the image no longer exists in the gallery
+    if check_text_exists_via_control(text=img_name):
+        return EvalResult(False, f"Subtask execution failed because the image '{img_name}' still exists in the gallery.", 2/3)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 3/3)

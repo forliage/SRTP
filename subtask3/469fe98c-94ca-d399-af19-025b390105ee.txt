@@ -1,0 +1,15 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion() -> EvalResult:
+    # Check if the 'Add Markdown Cell' button was clicked
+    if not check_mouse_clicks(text='Add Markdown Cell'):
+        return EvalResult(False, "Subtask execution failed because agent did not click 'Add Markdown Cell'.", 0/2)
+    
+    # Check if a markdown cell is present in the environment
+    if not check_text_exists_via_control(text='markdown cell'):
+        return EvalResult(False, "Subtask execution failed because a markdown cell was not created.", 1/2)
+    
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 2/2)

@@ -1,0 +1,15 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(old_name: str, new_name: str) -> EvalResult:
+    # Check if the old playlist name was selected
+    if not check_mouse_clicks(text=old_name):
+        return EvalResult(False, f"Subtask execution failed because agent did not select the playlist '{old_name}'.", 0/2)
+
+    # Check if the new playlist name is present in the environment
+    if not check_text_exists_via_control(text=new_name):
+        return EvalResult(False, f"Subtask execution failed because the new playlist name '{new_name}' was not found.", 1/2)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 2/2)

@@ -1,0 +1,23 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(note_idx: str) -> EvalResult:
+    # Check if the note list was opened
+    if not check_mouse_clicks(text='Open note list'):
+        return EvalResult(False, "Subtask execution failed because agent did not open the note list.", 0/4)
+    
+    # Check if the specified note was opened
+    if note_idx == 'first':
+        note_text = "<1>We can't create a new Quick Note because we can't find your Quick Notes section."
+        if not check_text_exists_via_control(text=note_text):
+            return EvalResult(False, "Subtask execution failed because agent did not open the first note.", 1/4)
+    else:
+        return EvalResult(False, f"Subtask execution failed because note index '{note_idx}' is not recognized.", 2/4)
+    
+    # Check if the image was right-clicked and deleted
+    if not check_mouse_clicks(text='Screenshot'):
+        return EvalResult(False, "Subtask execution failed because agent did not right-click to delete the image.", 3/4)
+    
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 4/4)

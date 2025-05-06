@@ -1,0 +1,24 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(page_name: str) -> EvalResult:
+    # Check if the page with the specified name was clicked
+    if not check_mouse_clicks(text=page_name):
+        return EvalResult(False, f"Subtask execution failed because the page '{page_name}' was not clicked.", 0/4)
+
+    # Check if the clipboard contains text
+    if not clipboard_contains_text():
+        return EvalResult(False, "Subtask execution failed because the clipboard does not contain any text.", 1/4)
+
+    # Get the text from the clipboard
+    clipboard_text = get_clipboard_text()
+    if not clipboard_text:
+        return EvalResult(False, "Subtask execution failed because could not retrieve text from the clipboard.", 2/4)
+
+    # Check if the page was renamed to the clipboard content
+    if not check_text_exists_via_control(text=clipboard_text):
+        return EvalResult(False, f"Subtask execution failed because the page was not renamed to '{clipboard_text}'.", 3/4)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 4/4)

@@ -1,0 +1,19 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(station_name: str) -> EvalResult:
+    # Check if the agent navigated to the library
+    if not check_mouse_clicks(text='LIBRARY'):
+        return EvalResult(False, "Subtask execution failed because agent did not navigate to the library.", 0/3)
+
+    # Check if the agent selected the specified station
+    if not check_mouse_clicks(text=station_name):
+        return EvalResult(False, f"Subtask execution failed because agent did not select the station '{station_name}'.", 1/3)
+
+    # Check if the station is playing
+    if not check_text_exists_via_control(text='LIVE'):
+        return EvalResult(False, f"Subtask execution failed because the station '{station_name}' is not playing.", 2/3)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 3/3)

@@ -1,0 +1,29 @@
+
+import os
+from collections import namedtuple
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(video_path: str, dir_path: str) -> EvalResult:
+    # Extract the video file name
+    video_file_name = os.path.basename(video_path)
+    
+    # Check if the video file was selected for compression
+    if not check_mouse_clicks(text=video_file_name):
+        return EvalResult(False, f"Subtask execution failed because agent did not select the video '{video_file_name}' for compression.", 0/4)
+    
+    # Check if the 'Compress Video' option was clicked
+    if not check_mouse_clicks(text='Compress Video'):
+        return EvalResult(False, "Subtask execution failed because agent did not click the 'Compress Video' option.", 1/4)
+    
+    # Check if the output directory was correctly set
+    output_dir_name = os.path.basename(dir_path.rstrip('/\\'))
+    if not (check_mouse_clicks(text=output_dir_name) or check_keyboard_types(text=dir_path)):
+        return EvalResult(False, f"Subtask execution failed because agent did not set the output directory to '{dir_path}'.", 2/4)
+    
+    # Check if the compressed video file exists in the specified directory
+    compressed_video_path = os.path.join(dir_path, video_file_name)
+    if not check_file_exists(compressed_video_path):
+        return EvalResult(False, f"Subtask execution failed because the compressed video was not found in '{dir_path}'.", 3/4)
+    
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 4/4)

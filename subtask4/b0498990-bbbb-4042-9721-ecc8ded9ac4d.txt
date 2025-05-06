@@ -1,0 +1,11 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion() -> EvalResult:
+    # Check if the system has detected any editing actions
+    if not check_text_exists_via_control(text='System'):
+        return EvalResult(False, "Subtask execution failed because no editing actions were detected on the opened image.", 0/1)
+    
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 1/1)

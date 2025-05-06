@@ -1,0 +1,31 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(img_path: str, brightness: int) -> EvalResult:
+    # Check if the image file was opened
+    if not check_mouse_clicks(text='Open'):
+        return EvalResult(False, "Subtask execution failed because the agent did not open the image file.", 0/6)
+
+    # Check if the image path was typed
+    if not check_keyboard_types(text=img_path):
+        return EvalResult(False, "Subtask execution failed because the agent did not type the image path.", 1/6)
+
+    # Check if the 'Adjustments' menu was accessed
+    if not check_mouse_clicks(text='Adjustments'):
+        return EvalResult(False, "Subtask execution failed because the agent did not access the 'Adjustments' menu.", 2/6)
+
+    # Check if the brightness adjustment was made
+    if not check_mouse_clicks(text='Brightness/Contrast'):
+        return EvalResult(False, "Subtask execution failed because the agent did not select 'Brightness/Contrast'.", 3/6)
+
+    # Check if the correct brightness value was set
+    if not check_keyboard_types(text=str(brightness)):
+        return EvalResult(False, f"Subtask execution failed because the agent did not set the brightness to {brightness}.", 4/6)
+
+    # Check if the image was saved
+    if not check_mouse_clicks(text='File') or not check_mouse_clicks(text='Save'):
+        return EvalResult(False, "Subtask execution failed because the agent did not save the image.", 5/6)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 6/6)

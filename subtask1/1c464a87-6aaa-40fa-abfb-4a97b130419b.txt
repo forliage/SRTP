@@ -1,0 +1,29 @@
+
+import os
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(file_path: str, output_pdf_path: str) -> EvalResult:
+    # Extract the file name and output file name
+    file_name = os.path.basename(file_path)
+    output_file_name = os.path.basename(output_pdf_path)
+
+    # Check if the original file was selected
+    if not check_mouse_clicks(text=file_name):
+        return EvalResult(False, f"Subtask execution failed because agent did not select the file '{file_name}'.", 0/4)
+
+    # Check if the 'Convert to PDF' option was clicked
+    if not check_mouse_clicks(text='Convert to PDF'):
+        return EvalResult(False, "Subtask execution failed because agent did not click 'Convert to PDF'.", 1/4)
+
+    # Check if the conversion process was completed
+    if not check_text_exists_via_control(text='PDF24 has processed your job.'):
+        return EvalResult(False, "Subtask execution failed because the conversion process was not completed.", 2/4)
+
+    # Check if the output PDF file exists
+    if not check_file_exists(file_path=output_pdf_path):
+        return EvalResult(False, f"Subtask execution failed because the output PDF file '{output_file_name}' was not found.", 3/4)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 4/4)

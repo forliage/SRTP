@@ -1,0 +1,14 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(width: str, height: str) -> EvalResult:
+    # Check if the specified width and height are present in the system controls
+    expected_size_text = f"{width} x {height}"
+    
+    # Use OCR to check if the resized dimensions are displayed
+    if not check_text_exists_via_ocr(text=expected_size_text):
+        return EvalResult(False, f"Subtask execution failed because the image was not resized to {expected_size_text}.", 0/1)
+    
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 1/1)

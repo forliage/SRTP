@@ -1,0 +1,27 @@
+from collections import namedtuple
+import os
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(pdf_path: str, pdf_password: str) -> EvalResult:
+    # Extract the PDF file name
+    pdf_file_name = os.path.basename(pdf_path)
+
+    # Check if the PDF file was selected
+    if not check_mouse_clicks(text=pdf_file_name):
+        return EvalResult(False, f"Subtask execution failed because agent did not select the PDF file '{pdf_file_name}'.", 0/4)
+
+    # Check if the 'Protect PDF' option was clicked
+    if not check_mouse_clicks(text='Protect PDF files'):
+        return EvalResult(False, "Subtask execution failed because agent did not click the 'Protect PDF files' option.", 1/4)
+
+    # Check if the 'User password' field was focused and the password was typed
+    if not check_mouse_clicks(text='User password') or not check_keyboard_types(text=pdf_password):
+        return EvalResult(False, "Subtask execution failed because agent did not enter the user password.", 2/4)
+
+    # Check if the 'Save' button was clicked to apply the password protection
+    if not check_mouse_clicks(text='\ue014 Save'):
+        return EvalResult(False, "Subtask execution failed because agent did not click the 'Save' button to apply the password protection.", 3/4)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 4/4)

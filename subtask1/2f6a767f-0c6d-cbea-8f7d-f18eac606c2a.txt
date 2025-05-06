@@ -1,0 +1,14 @@
+
+from collections import namedtuple
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(img_path: str) -> EvalResult:
+    # Extract the file name from the image path
+    img_name = os.path.basename(img_path)
+
+    # Check if the image is opened in Adobe Photoshop Express
+    if not check_text_exists_via_control(text=f'{img_name} - Adobe Photoshop Express'):
+        return EvalResult(False, f"Subtask execution failed because '{img_name}' is not open in Adobe Photoshop Express.", 0/1)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 1/1)

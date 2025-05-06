@@ -1,0 +1,15 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(img_name: str) -> EvalResult:
+    # Check if the image 'dog.jpg' was selected for editing
+    if not check_mouse_clicks(text=img_name):
+        return EvalResult(False, f"Subtask execution failed because agent did not select the image '{img_name}' for editing.", 0/2)
+    
+    # Check if the system indicates that the image is being edited
+    if not check_text_exists_via_control(text='System'):
+        return EvalResult(False, "Subtask execution failed because the system does not indicate that the image is being edited.", 1/2)
+    
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 2/2)

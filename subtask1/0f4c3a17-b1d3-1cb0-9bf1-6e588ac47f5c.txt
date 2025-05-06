@@ -1,0 +1,23 @@
+from collections import namedtuple
+import os
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(docx_path: str, text: str) -> EvalResult:
+    # Extract the file name from the path
+    file_name = os.path.basename(docx_path)
+
+    # Check if the document was opened
+    if not check_mouse_clicks(text=file_name):
+        return EvalResult(False, f"Subtask execution failed because the document '{file_name}' was not opened.", 0/3)
+
+    # Check if the specified text was typed
+    if not check_keyboard_types(text=text):
+        return EvalResult(False, f"Subtask execution failed because the text '{text}' was not typed.", 1/3)
+
+    # Check if the document was saved
+    if not check_mouse_clicks(text='Save'):
+        return EvalResult(False, "Subtask execution failed because the document was not saved.", 2/3)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 3/3)

@@ -1,0 +1,22 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(img_path: str, brightness: int) -> EvalResult:
+    # Extract the file name from the image path
+    img_name = os.path.basename(img_path)
+
+    # Check if the image file was opened
+    if not check_mouse_clicks(text='Open') or not check_file_exists(file_path=img_path):
+        return EvalResult(False, f"Subtask execution failed because the image '{img_name}' was not opened in paint.net.", 0/3)
+
+    # Check if the 'Adjustments' menu was accessed
+    if not check_mouse_clicks(text='Adjustments'):
+        return EvalResult(False, "Subtask execution failed because the 'Adjustments' menu was not accessed.", 1/3)
+
+    # Check if the brightness adjustment was made
+    if not check_text_exists_via_control(text=f'Brightness: {brightness}'):
+        return EvalResult(False, f"Subtask execution failed because brightness was not adjusted to '{brightness}'.", 2/3)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 3/3)

@@ -1,0 +1,27 @@
+from collections import namedtuple
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(input_pdf_path1: str, input_pdf_path2: str, output_pdf_path: str) -> EvalResult:
+    # Extract file names from paths
+    input_pdf_name1 = os.path.basename(input_pdf_path1)
+    input_pdf_name2 = os.path.basename(input_pdf_path2)
+    output_pdf_name = os.path.basename(output_pdf_path)
+
+    # Check if the first PDF was selected
+    if not check_mouse_clicks(text=input_pdf_name1):
+        return EvalResult(False, f"Subtask execution failed because agent did not select the first PDF '{input_pdf_name1}'.", 0/4)
+
+    # Check if the second PDF was selected
+    if not check_mouse_clicks(text=input_pdf_name2):
+        return EvalResult(False, f"Subtask execution failed because agent did not select the second PDF '{input_pdf_name2}'.", 1/4)
+
+    # Check if the 'Merge' button was clicked
+    if not check_mouse_clicks(text='Merge'):
+        return EvalResult(False, "Subtask execution failed because agent did not click the 'Merge' button.", 2/4)
+
+    # Check if the merged PDF file exists
+    if not check_file_exists(file_path=output_pdf_path):
+        return EvalResult(False, f"Subtask execution failed because the merged PDF '{output_pdf_name}' was not found.", 3/4)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 4/4)

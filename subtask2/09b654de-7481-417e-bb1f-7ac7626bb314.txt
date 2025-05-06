@@ -1,0 +1,19 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(new_password: str) -> EvalResult:
+    # Check if the 'CHANGE PASSWORD' button was clicked
+    if not check_mouse_clicks(text='CHANGE PASSWORD'):
+        return EvalResult(False, "Subtask execution failed because agent did not click 'CHANGE PASSWORD'.", 0/3)
+
+    # Check if the new password was typed
+    if not check_keyboard_types(text=new_password):
+        return EvalResult(False, "Subtask execution failed because the new password was not typed.", 1/3)
+
+    # Check if the password change was successful by verifying the success message
+    if not check_text_exists_via_control(text='Your password has been successfully updated'):
+        return EvalResult(False, "Subtask execution failed because the success message was not found.", 2/3)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 3/3)

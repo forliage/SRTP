@@ -1,0 +1,28 @@
+
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(task_name: str, due_date: str) -> EvalResult:
+    # Check if the agent has clicked to add a new task
+    if not check_mouse_clicks(text='Add task'):
+        return EvalResult(False, "Subtask execution failed because agent did not click 'Add task'.", 0/6)
+
+    # Check if the agent has typed the task name
+    if not check_keyboard_types(text=task_name):
+        return EvalResult(False, f"Subtask execution failed because agent did not type the task name '{task_name}'.", 1/6)
+
+    # Check if the agent has set the due date
+    if not check_mouse_clicks(text='Due date'):
+        return EvalResult(False, "Subtask execution failed because agent did not click 'Due date'.", 2/6)
+    if not check_keyboard_types(text=due_date):
+        return EvalResult(False, f"Subtask execution failed because agent did not set the due date to '{due_date}'.", 3/6)
+
+    # Check if the task with the specified name and due date exists
+    if not check_text_exists_via_control(text=f'Task: {task_name}'):
+        return EvalResult(False, f"Subtask execution failed because task '{task_name}' was not found.", 4/6)
+    if not check_text_exists_via_control(text=due_date):
+        return EvalResult(False, f"Subtask execution failed because due date '{due_date}' was not found.", 5/6)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 6/6)

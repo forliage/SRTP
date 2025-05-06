@@ -1,0 +1,11 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion() -> EvalResult:
+    # Check if the 'Pause' button was clicked
+    if not check_mouse_clicks(text='Pause'):
+        return EvalResult(False, "Subtask execution failed because the agent did not click the 'Pause' button.", 0/1)
+    
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 1/1)

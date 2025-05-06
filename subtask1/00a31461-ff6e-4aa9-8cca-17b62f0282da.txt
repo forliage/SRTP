@@ -1,0 +1,23 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(csv_path: str) -> EvalResult:
+    # Check if the 'More actions' button was clicked
+    if not check_mouse_clicks(text='More actions'):
+        return EvalResult(False, "Subtask execution failed because agent did not click the 'More actions' button.", 0/4)
+    
+    # Check if the 'Import tasks from a spreadsheet using a CSV file.' text is present
+    if not check_text_exists_via_control(text='Import tasks from a spreadsheet using a CSV file.'):
+        return EvalResult(False, "Subtask execution failed because the import tasks option was not accessed.", 1/4)
+    
+    # Check if the CSV file path was typed
+    if not check_keyboard_types(text=csv_path):
+        return EvalResult(False, f"Subtask execution failed because the CSV file path '{csv_path}' was not typed.", 2/4)
+    
+    # Check if the 'Open' button was clicked to import the file
+    if not check_mouse_clicks(text='Open'):
+        return EvalResult(False, "Subtask execution failed because the 'Open' button was not clicked to import the file.", 3/4)
+    
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 4/4)

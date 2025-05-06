@@ -1,0 +1,19 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(img_name: str, pdf_path: str) -> EvalResult:
+    # Check if the image was right-clicked
+    if not check_mouse_clicks(text=img_name):
+        return EvalResult(False, f"Subtask execution failed because agent did not right-click on the image '{img_name}'.", 0/3)
+
+    # Check if the 'Print' option was selected
+    if not check_mouse_clicks(text='Print'):
+        return EvalResult(False, "Subtask execution failed because agent did not select the 'Print' option.", 1/3)
+
+    # Check if the file was printed to the specified PDF path
+    if not check_file_exists(file_path=pdf_path):
+        return EvalResult(False, f"Subtask execution failed because the PDF file '{pdf_path}' was not created.", 2/3)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 3/3)

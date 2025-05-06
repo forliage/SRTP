@@ -1,0 +1,25 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(song_name: str) -> EvalResult:
+    # Check if the song name was clicked
+    if not check_mouse_clicks(text=song_name):
+        return EvalResult(False, f"Subtask execution failed because agent did not click on the song '{song_name}'.", 0/4)
+
+    # Check if the 'More options' for the song was clicked
+    more_options_text = f"More options for {song_name}"
+    if not check_mouse_clicks(text=more_options_text):
+        return EvalResult(False, f"Subtask execution failed because agent did not click on 'More options' for the song '{song_name}'.", 1/4)
+
+    # Check if the song link was copied to the clipboard
+    if not clipboard_contains_text():
+        return EvalResult(False, "Subtask execution failed because no text was found in clipboard.", 2/4)
+
+    # Get the text from clipboard and verify it is a URL
+    clipboard_text = get_clipboard_text()
+    if not clipboard_text.startswith(('http://', 'https://')):
+        return EvalResult(False, "Subtask execution failed because clipboard text is not a valid URL.", 3/4)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 4/4)

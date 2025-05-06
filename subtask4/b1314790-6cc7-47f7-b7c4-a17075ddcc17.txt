@@ -1,0 +1,28 @@
+
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion() -> EvalResult:
+    # Check if the agent navigated to 'Settings'
+    if not check_mouse_clicks(text='Settings'):
+        return EvalResult(False, "Subtask execution failed because agent did not open 'Settings'.", 0/5)
+
+    # Check if the agent navigated to 'Apps'
+    if not check_mouse_clicks(text='Apps'):
+        return EvalResult(False, "Subtask execution failed because agent did not navigate to 'Apps'.", 1/5)
+
+    # Check if the agent navigated to 'Default apps'
+    if not check_mouse_clicks(text='Default apps'):
+        return EvalResult(False, "Subtask execution failed because agent did not navigate to 'Default apps'.", 2/5)
+
+    # Check if the agent selected 'Google Chrome'
+    if not check_mouse_clicks(text='Google Chrome'):
+        return EvalResult(False, "Subtask execution failed because agent did not select 'Google Chrome'.", 3/5)
+
+    # Check if the agent set Google Chrome as the default browser
+    if not check_text_exists_via_control(text='Google Chrome'):
+        return EvalResult(False, "Subtask execution failed because 'Google Chrome' was not set as the default browser.", 4/5)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 5/5)

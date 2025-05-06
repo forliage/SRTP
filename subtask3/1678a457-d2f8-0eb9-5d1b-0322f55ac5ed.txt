@@ -1,0 +1,24 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(markdown_cell_num: str) -> EvalResult:
+    # Check if the specified markdown cell was selected
+    if not check_mouse_clicks(text=markdown_cell_num):
+        return EvalResult(False, f"Subtask execution failed because markdown cell '{markdown_cell_num}' was not selected.", 0/4)
+
+    # Check if there is text in the clipboard
+    if not clipboard_contains_text():
+        return EvalResult(False, "Subtask execution failed because no text was found in clipboard.", 1/4)
+
+    # Get the text from clipboard
+    clipboard_text = get_clipboard_text()
+    if not clipboard_text:
+        return EvalResult(False, "Subtask execution failed because could not get text from clipboard.", 2/4)
+
+    # Check if the clipboard text is present in the markdown cell
+    if not check_text_exists_via_control(text=clipboard_text):
+        return EvalResult(False, "Subtask execution failed because clipboard text was not pasted into the markdown cell.", 3/4)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 4/4)

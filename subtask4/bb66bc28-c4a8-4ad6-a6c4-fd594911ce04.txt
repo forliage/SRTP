@@ -1,0 +1,19 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(task_name: str) -> EvalResult:
+    # Check if the 'More actions' button for the specified task was clicked
+    if not check_mouse_clicks(text=task_name):
+        return EvalResult(False, f"Subtask execution failed because agent did not click on the task '{task_name}'.", 0/3)
+
+    # Check if the 'Copy link to task' option was clicked
+    if not check_mouse_clicks(text='Copy link to task'):
+        return EvalResult(False, "Subtask execution failed because agent did not click 'Copy link to task'.", 1/3)
+
+    # Check if the clipboard contains text, indicating the link was copied
+    if not clipboard_contains_text():
+        return EvalResult(False, "Subtask execution failed because no text was found in clipboard after copying the link.", 2/3)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 3/3)

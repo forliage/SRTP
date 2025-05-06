@@ -1,0 +1,19 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(search_term: str) -> EvalResult:
+    # Check if the search term was typed in the Wikipedia search bar
+    if not check_keyboard_types(text=search_term):
+        return EvalResult(False, f"Subtask execution failed because the search term '{search_term}' was not typed in the search bar.", 0/3)
+    
+    # Check if the first result link was copied
+    if not clipboard_contains_text():
+        return EvalResult(False, "Subtask execution failed because no text was found in clipboard.", 1/3)
+    
+    clipboard_text = get_clipboard_text()
+    if not clipboard_text.startswith('https://en.wikipedia.org/wiki/'):
+        return EvalResult(False, "Subtask execution failed because the clipboard text is not a valid Wikipedia link.", 2/3)
+    
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 3/3)

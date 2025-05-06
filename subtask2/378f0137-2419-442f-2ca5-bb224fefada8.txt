@@ -1,0 +1,27 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion() -> EvalResult:
+    # Check if the agent navigated to the correct URL
+    if not check_text_exists_via_control(text='文本翻译'):
+        return EvalResult(False, "Subtask execution failed because the agent did not navigate to the correct translation page.", 0/5)
+
+    # Check if the text was pasted
+    if not clipboard_contains_text():
+        return EvalResult(False, "Subtask execution failed because no text was found in clipboard to paste.", 1/5)
+    
+    clipboard_text = get_clipboard_text()
+    if not check_text_exists_via_control(text=clipboard_text):
+        return EvalResult(False, "Subtask execution failed because the text was not pasted into the translation input.", 2/5)
+
+    # Check if the translation result was copied
+    if not check_mouse_clicks(text='复制'):
+        return EvalResult(False, "Subtask execution failed because the agent did not click '复制' to copy the translation result.", 3/5)
+    
+    # Verify if the clipboard contains the translation result
+    if not clipboard_contains_text():
+        return EvalResult(False, "Subtask execution failed because no translation result was found in clipboard.", 4/5)
+    
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 5/5)

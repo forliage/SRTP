@@ -1,0 +1,15 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(note_title: str, operation: str) -> EvalResult:
+    # Check if the note with the specified title was opened
+    if not check_mouse_clicks(text=note_title):
+        return EvalResult(False, f"Subtask execution failed because the note titled '{note_title}' was not opened.", 0/2)
+
+    # Check if the specified operation (e.g., Underline) was performed on the text
+    if not check_mouse_clicks(text=operation):
+        return EvalResult(False, f"Subtask execution failed because the operation '{operation}' was not performed on the text.", 1/2)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 2/2)

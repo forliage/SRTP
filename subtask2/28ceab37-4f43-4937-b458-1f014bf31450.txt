@@ -1,0 +1,34 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(text: str, target_language: str) -> EvalResult:
+    # Check if the agent navigated to the correct website
+    if not check_text_exists_via_control(text='deepl.com/en/translator'):
+        return EvalResult(False, "Subtask execution failed because the agent did not navigate to 'deepl.com/en/translator'.", 0/5)
+
+    # Check if the target language was selected
+    if not check_mouse_clicks(text=f'Select target language. Currently selected: {target_language}'):
+        return EvalResult(False, f"Subtask execution failed because the target language '{target_language}' was not selected.", 1/5)
+
+    # Check if the input text was typed
+    if not check_keyboard_types(text=text):
+        return EvalResult(False, f"Subtask execution failed because the text '{text}' was not input.", 2/5)
+
+    # Check if the translation result was copied to the clipboard
+    if not clipboard_contains_text():
+        return EvalResult(False, "Subtask execution failed because the translation result was not copied to the clipboard.", 3/5)
+
+    # Get the clipboard text and verify it matches one of the expected translations
+    clipboard_text = get_clipboard_text()
+    expected_translations = [
+        "Hallo, wie komme ich zum West Lake?",
+        "Hallo, wie komme ich nach West Lake?",
+        "Hallo, wie komme ich zum Westsee?",
+        "Hallo, wie erreiche ich den West Lake?"
+    ]
+    if clipboard_text not in expected_translations:
+        return EvalResult(False, f"Subtask execution failed because the clipboard text '{clipboard_text}' does not match any expected translation.", 4/5)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 5/5)

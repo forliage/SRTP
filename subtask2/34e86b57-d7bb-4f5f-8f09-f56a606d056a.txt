@@ -1,0 +1,23 @@
+from collections import namedtuple
+
+EvalResult = namedtuple('EvalResult', ['success', 'message', 'progress'])
+
+def evaluate_agent_task_completion(img_name: str, width: str, height: str) -> EvalResult:
+    # Check if the photo was opened in the Photos application
+    if not check_mouse_clicks(text=img_name):
+        return EvalResult(False, f"Subtask execution failed because the agent did not open the photo '{img_name}'.", 0/4)
+
+    # Check if the resize option was accessed
+    if not check_mouse_clicks(text='Resize'):
+        return EvalResult(False, "Subtask execution failed because the agent did not access the 'Resize' option.", 1/4)
+
+    # Check if the correct width was entered
+    if not check_keyboard_types(text=width):
+        return EvalResult(False, f"Subtask execution failed because the agent did not enter the width '{width}'.", 2/4)
+
+    # Check if the correct height was entered
+    if not check_keyboard_types(text=height):
+        return EvalResult(False, f"Subtask execution failed because the agent did not enter the height '{height}'.", 3/4)
+
+    # All checks passed, subtask is considered complete
+    return EvalResult(True, "Subtask completed successfully", 4/4)
